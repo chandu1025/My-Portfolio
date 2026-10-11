@@ -27,7 +27,6 @@ import { ParticleCanvasComponent } from './shared/particle-canvas.component';
   ],
   template: `
     <app-particle-canvas />
-    <a class="skip-link" href="#about">Skip to content</a>
     <app-header />
     <main style="position: relative; z-index: 1;">
       <app-hero />
