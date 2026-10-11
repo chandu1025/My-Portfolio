@@ -9,20 +9,22 @@ import { RevealDirective } from '../shared/reveal.directive';
   template: `
     <section id="experience" class="section experience">
       <div class="container">
-        <h2>Where I've worked.</h2>
+        <div appReveal>
+          <h2>Where I've worked.</h2>
+        </div>
         <div class="timeline">
           @for (job of jobs; track job.company) {
-            <article class="job" appReveal>
+            <article class="job glass-panel" appReveal>
               <header>
                 <h3>{{ job.role }}</h3>
                 <p class="job-meta">
                   <strong>{{ job.company }}</strong>
                   @if (job.place) {
-                    <span>{{ job.place }}</span>
+                    <span>• {{ job.place }}</span>
                   }
-                  <span>{{ job.period }}</span>
+                  <span>• {{ job.period }}</span>
                   @if (job.current) {
-                    <span class="badge">Current role</span>
+                    <span class="badge">Current Role</span>
                   }
                 </p>
               </header>

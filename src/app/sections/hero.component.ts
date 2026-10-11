@@ -5,117 +5,104 @@ import { PROFILE } from '../data';
   selector: 'app-hero',
   standalone: true,
   template: `
-    <section id="top" class="hero on-dark" #hero>
-      <div class="container hero-inner">
-        <p class="status hero-after">
-          <span class="status-dot" aria-hidden="true"></span>
-          Open to full-time roles and freelance projects
-        </p>
+    <section id="top" class="hero" #hero>
+      <div class="hero-glow-1"></div>
+      <div class="hero-glow-2"></div>
 
-        <h1 class="hero-name">
-          <span class="visually-hidden">{{ profile.shortName }}</span>
-          <span class="line" aria-hidden="true"><span>Gnana</span></span>
-          <span class="line" aria-hidden="true"><span>Chandra</span></span>
+      <div class="container hero-inner">
+        <div class="status-badge">
+          <span class="pulse-dot"></span>
+          Available for Full-Time Roles & Freelance Projects
+        </div>
+
+        <h1 class="hero-title">
+          Hi, I'm <span class="gradient-text">{{ profile.shortName }}</span>
         </h1>
 
-        <p class="hero-role hero-after">
-          Angular frontend developer in Tirupati. Trained as an electronics engineer, now building fast, responsive
-          interfaces with Angular 19 and TypeScript.
+        <p class="hero-role">
+          Angular Frontend Developer based in Tirupati. Trained as an electronics engineer,
+          now crafting performant, reactive web applications with Angular 19 and TypeScript.
         </p>
 
-        <div class="hero-actions hero-after">
-          <a class="btn btn-sun" [href]="profile.resume" download>Download resume</a>
-          <a class="btn btn-ghost" href="#contact">Contact me</a>
+        <div class="hero-actions">
+          <a class="btn btn-primary" [href]="profile.resume" download>Download Resume</a>
+          <a class="btn btn-ghost" href="#contact">Get in Touch</a>
         </div>
       </div>
 
-      <svg class="wave" #svg aria-hidden="true" focusable="false">
-        <path #wave pathLength="1" d="M0 75 L1200 75" />
-      </svg>
+      <canvas #waveCanvas class="wave-canvas"></canvas>
     </section>
   `,
 })
 export class HeroComponent implements AfterViewInit, OnDestroy {
   readonly profile = PROFILE;
 
-  @ViewChild('hero', { static: true }) private heroRef!: ElementRef<HTMLElement>;
-  @ViewChild('svg', { static: true }) private svgRef!: ElementRef<SVGSVGElement>;
-  @ViewChild('wave', { static: true }) private waveRef!: ElementRef<SVGPathElement>;
+  @ViewChild('waveCanvas', { static: true })
+  private canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private frame = 0;
-  private amp = 1;
-  private targetAmp = 1;
-  private phase = 0;
   private width = 0;
-  private readonly height = 150;
-  private cleanup: Array<() => void> = [];
+  private height = 140;
+  private mouseX = 0.5;
 
   constructor(private readonly zone: NgZone) {}
 
   ngAfterViewInit(): void {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    this.draw(0);
-    if (reduce) return;
+    const canvas = this.canvasRef.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const resize = () => {
+      this.width = canvas.parentElement?.clientWidth || window.innerWidth;
+      canvas.width = this.width * window.devicePixelRatio;
+      canvas.height = this.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    };
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    window.addEventListener('mousemove', (e) => {
+      this.mouseX = e.clientX / window.innerWidth;
+    });
 
     this.zone.runOutsideAngular(() => {
-      const hero = this.heroRef.nativeElement;
+      let t = 0;
+      const render = () => {
+        t += 0.02;
+        ctx.clearRect(0, 0, this.width, this.height);
 
-      const onMove = (e: PointerEvent) => {
-        const rect = hero.getBoundingClientRect();
-        const px = (e.clientX - rect.left) / rect.width;
-        const py = (e.clientY - rect.top) / rect.height;
-        this.targetAmp = 0.7 + (1 - py) * 1.1;
-        this.phase = px * 6;
-      };
-      const onLeave = () => {
-        this.targetAmp = 1;
-      };
-      hero.addEventListener('pointermove', onMove);
-      hero.addEventListener('pointerleave', onLeave);
-      this.cleanup.push(() => hero.removeEventListener('pointermove', onMove));
-      this.cleanup.push(() => hero.removeEventListener('pointerleave', onLeave));
+        // Multi-frequency wave drawing
+        ctx.beginPath();
+        ctx.lineWidth = 2.5;
 
-      const loop = (t: number) => {
-        if (window.scrollY < window.innerHeight) {
-          this.amp += (this.targetAmp - this.amp) * 0.06;
-          this.draw(t);
+        const grad = ctx.createLinearGradient(0, 0, this.width, 0);
+        grad.addColorStop(0, '#6366f1');
+        grad.addColorStop(0.5, '#06b6d4');
+        grad.addColorStop(1, 'rgba(99, 102, 241, 0.1)');
+        ctx.strokeStyle = grad;
+
+        const mid = this.height / 2;
+        for (let x = 0; x <= this.width; x += 6) {
+          const envelope = Math.sin((x / this.width) * Math.PI);
+          const y =
+            mid +
+            envelope *
+              (Math.sin(x * 0.012 + t + this.mouseX * 3) * 22 +
+                Math.sin(x * 0.028 - t * 0.8) * 12);
+
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
         }
-        this.frame = requestAnimationFrame(loop);
+        ctx.stroke();
+
+        this.frame = requestAnimationFrame(render);
       };
-      this.frame = requestAnimationFrame(loop);
+      this.frame = requestAnimationFrame(render);
     });
   }
 
   ngOnDestroy(): void {
     cancelAnimationFrame(this.frame);
-    this.cleanup.forEach((fn) => fn());
-  }
-
-  /** A busy signal on the left that settles into a clean flat line on the right. */
-  private draw(t: number): void {
-    const w = document.documentElement.clientWidth || 1200;
-    if (w !== this.width) {
-      this.width = w;
-      this.svgRef.nativeElement.setAttribute('viewBox', `0 0 ${w} ${this.height}`);
-    }
-    const mid = this.height / 2;
-    let d = '';
-    for (let x = 0; x <= w; x += 5) {
-      const envelope = 1 - this.smoothstep(0.3, 0.92, x / w);
-      const y =
-        mid +
-        envelope *
-          this.amp *
-          (Math.sin(x * 0.018 + t * 0.0017 + this.phase) * 30 +
-            Math.sin(x * 0.047 - t * 0.0011) * 14 +
-            Math.sin(x * 0.11 + t * 0.0023) * 5);
-      d += (x === 0 ? 'M' : 'L') + x + ' ' + y.toFixed(1);
-    }
-    this.waveRef.nativeElement.setAttribute('d', d);
-  }
-
-  private smoothstep(a: number, b: number, x: number): number {
-    const k = Math.min(1, Math.max(0, (x - a) / (b - a)));
-    return k * k * (3 - 2 * k);
   }
 }

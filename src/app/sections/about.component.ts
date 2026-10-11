@@ -1,40 +1,44 @@
 import { Component } from '@angular/core';
 import { PROFILE } from '../data';
+import { RevealDirective } from '../shared/reveal.directive';
 
 @Component({
   selector: 'app-about',
   standalone: true,
+  imports: [RevealDirective],
   template: `
     <section id="about" class="section about">
       <div class="container about-grid">
-        <h2>From signals to screens.</h2>
-        <div class="about-body">
+        <div appReveal>
+          <h2>From signals to clean code.</h2>
+        </div>
+        <div class="about-body glass-panel" style="padding: 2.25rem;" appReveal>
           <p>
-            I studied Electronics and Communication Engineering, then moved into web development. Today I build Angular 19
-            and TypeScript interfaces at Intelizest Consulting: components, services, routing, forms with validation and
-            REST API integration.
+            I completed my B.Tech in Electronics and Communication Engineering, transitioning directly
+            into web software engineering. Today I build production frontend architectures at Intelizest Consulting:
+            creating reactive components, modular services, client-side routing, and robust form validation connected to REST APIs.
           </p>
           <p>
-            Before that I spent six months as a web developer intern at astTECS, building PHP and MySQL applications with
-            login systems and data modules. I also build WordPress websites for small businesses as a freelancer, and I
-            keep exploring new AI tools.
+            Prior to my current position, I completed a six-month web development internship at astTECS developing
+            PHP and MySQL web portals, authentication systems, and database workflows. I also develop responsive
+            WordPress client sites and explore AI tools to accelerate development velocity.
           </p>
           <dl class="facts">
             <div>
-              <dt>Based in</dt>
+              <dt>Location</dt>
               <dd>{{ profile.location }}</dd>
             </div>
             <div>
-              <dt>Currently</dt>
-              <dd>Angular Frontend Developer at Intelizest Consulting</dd>
+              <dt>Current Role</dt>
+              <dd>Angular Frontend Developer at Intelizest</dd>
             </div>
             <div>
-              <dt>Background</dt>
-              <dd>B.Tech in Electronics and Communication Engineering</dd>
+              <dt>Engineering Degree</dt>
+              <dd>B.Tech in Electronics & Communication</dd>
             </div>
             <div>
-              <dt>Also</dt>
-              <dd>Freelance WordPress developer</dd>
+              <dt>Freelance</dt>
+              <dd>Web & WordPress Solutions</dd>
             </div>
           </dl>
         </div>

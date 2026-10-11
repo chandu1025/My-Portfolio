@@ -8,11 +8,13 @@ import { WorkComponent } from './sections/work.component';
 import { EducationComponent } from './sections/education.component';
 import { ContactComponent } from './sections/contact.component';
 import { FooterComponent } from './sections/footer.component';
+import { ParticleCanvasComponent } from './shared/particle-canvas.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
+    ParticleCanvasComponent,
     HeaderComponent,
     HeroComponent,
     AboutComponent,
@@ -24,9 +26,10 @@ import { FooterComponent } from './sections/footer.component';
     FooterComponent,
   ],
   template: `
+    <app-particle-canvas />
     <a class="skip-link" href="#about">Skip to content</a>
     <app-header />
-    <main>
+    <main style="position: relative; z-index: 1;">
       <app-hero />
       <app-about />
       <app-skills />

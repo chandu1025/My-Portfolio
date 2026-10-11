@@ -1,16 +1,20 @@
 import { Component } from '@angular/core';
 import { SKILLS } from '../data';
+import { RevealDirective } from '../shared/reveal.directive';
 
 @Component({
   selector: 'app-skills',
   standalone: true,
+  imports: [RevealDirective],
   template: `
     <section id="skills" class="section skills">
       <div class="container">
-        <h2>What I work with.</h2>
+        <div appReveal>
+          <h2>Technical skill set.</h2>
+        </div>
         <div class="skill-grid">
           @for (group of skills; track group.title) {
-            <article class="skill-card" [class.featured]="group.featured">
+            <article class="skill-card glass-panel" [class.featured]="group.featured" appReveal>
               <h3>{{ group.title }}</h3>
               <ul class="chips">
                 @for (item of group.items; track item) {

@@ -1,17 +1,21 @@
 import { Component } from '@angular/core';
 import { CERTIFICATION, EDUCATION } from '../data';
+import { RevealDirective } from '../shared/reveal.directive';
 
 @Component({
   selector: 'app-education',
   standalone: true,
+  imports: [RevealDirective],
   template: `
     <section id="education" class="section education">
       <div class="container">
-        <h2>Education and certification.</h2>
+        <div appReveal>
+          <h2>Education & certification.</h2>
+        </div>
         <ul class="edu-list">
           @for (item of education; track item.title) {
-            <li>
-              <p class="edu-period">{{ item.period }}</p>
+            <li class="edu-item glass-panel" appReveal>
+              <span class="edu-period">{{ item.period }}</span>
               <div>
                 <h3>{{ item.title }}</h3>
                 <p>{{ item.place }}</p>
@@ -19,8 +23,8 @@ import { CERTIFICATION, EDUCATION } from '../data';
               </div>
             </li>
           }
-          <li>
-            <p class="edu-period">{{ certification.date }}</p>
+          <li class="edu-item glass-panel" appReveal>
+            <span class="edu-period">{{ certification.date }}</span>
             <div>
               <h3>{{ certification.title }}</h3>
               <p>{{ certification.issuer }}</p>
