@@ -974,3 +974,18 @@ a { color: inherit; text-decoration: none; }
 .btn-primary:hover::after {
   transform: rotate(30deg) translateY(100%);
 }
+/* Hide system cursor on desktop only */
+@media (pointer: fine) {
+  body, a, button, input, textarea, select {
+    cursor: none !important;
+  }
+}
+/* Add inside zen-game-modal.component.ts styles */
+.zen-backdrop,
+.zen-backdrop * {
+  cursor: auto !important;
+}
+
+.zen-backdrop canvas {
+  cursor: pointer !important;
+}
