@@ -1,13 +1,19 @@
-import { AfterViewInit, Directive, ElementRef, HostListener, OnDestroy } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, Input, NgZone, OnDestroy } from '@angular/core';
 
 @Directive({ selector: '[appReveal]', standalone: true })
 export class RevealDirective implements AfterViewInit, OnDestroy {
-  private observer?: IntersectionObserver;
+  @Input('appReveal') variant = '';   // 'left' | 'right' | 'zoom' | '' (up)
+  @Input() revealDelay = 0;           // ms, for staggering
 
-  constructor(private readonly el: ElementRef<HTMLElement>) {}
+  private observer?: IntersectionObserver;
+  private cleanup?: () => void;
+
+  constructor(private readonly el: ElementRef<HTMLElement>, private readonly zone: NgZone) {}
 
   ngAfterViewInit(): void {
     const node = this.el.nativeElement;
+    node.dataset['reveal'] = this.variant || 'up';
+    node.style.setProperty('--d', `${this.revealDelay}ms`);
     node.classList.add('reveal');
 
     if (typeof IntersectionObserver === 'undefined') {
@@ -22,21 +28,24 @@ export class RevealDirective implements AfterViewInit, OnDestroy {
           this.observer?.disconnect();
         }
       },
-      { threshold: 0.12 }
+      { threshold: 0.12 },
     );
     this.observer.observe(node);
-  }
 
-  @HostListener('mousemove', ['$event'])
-  onMouseMove(e: MouseEvent): void {
-    const rect = this.el.nativeElement.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    this.el.nativeElement.style.setProperty('--mouse-x', `${x}px`);
-    this.el.nativeElement.style.setProperty('--mouse-y', `${y}px`);
+    // Spotlight follows the mouse without triggering Angular change detection
+    this.zone.runOutsideAngular(() => {
+      const move = (e: MouseEvent) => {
+        const r = node.getBoundingClientRect();
+        node.style.setProperty('--mouse-x', `${e.clientX - r.left}px`);
+        node.style.setProperty('--mouse-y', `${e.clientY - r.top}px`);
+      };
+      node.addEventListener('mousemove', move, { passive: true });
+      this.cleanup = () => node.removeEventListener('mousemove', move);
+    });
   }
 
   ngOnDestroy(): void {
     this.observer?.disconnect();
+    this.cleanup?.();
   }
 }

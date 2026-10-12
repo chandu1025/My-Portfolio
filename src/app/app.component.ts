@@ -33,7 +33,6 @@ import { ZenGameModalComponent } from './shared/zen-game-modal.component'; // <-
     <app-custom-cursor />
     <app-particle-canvas />
     <app-zen-game-modal />     <!-- 3. Add Component -->
-    <a class="skip-link" href="#about">Skip to content</a>
     <app-header />
     <main style="position: relative; z-index: 1;">
       <app-hero />
