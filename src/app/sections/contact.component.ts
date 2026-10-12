@@ -3,7 +3,9 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PROFILE } from '../data';
 import { RevealDirective } from '../shared/reveal.directive';
 
-const FORM_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+// Paste your Formspree form ID here (the part after /f/)
+const FORMSPREE_ID = 'mwlvnrbv ';
+const FORM_ENDPOINT = `https://formspree.io/f/${FORMSPREE_ID}`;
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
@@ -31,27 +33,45 @@ type Status = 'idle' | 'sending' | 'sent' | 'error';
         <form class="contact-form glass-panel" [formGroup]="form" (ngSubmit)="submit()" novalidate appReveal>
           <div class="field">
             <label for="name">Your Name</label>
-            <input id="name" type="text" formControlName="name" autocomplete="name" />
+            <input id="name" type="text" formControlName="name" autocomplete="name"
+                   [attr.aria-invalid]="f.name.touched && f.name.invalid" />
             @if (f.name.touched && f.name.invalid) {
               <p class="field-error">Please enter your name.</p>
             }
           </div>
 
-          <div class="field">
-            <label for="email">Your Email</label>
-            <input id="email" type="email" formControlName="email" autocomplete="email" />
-            @if (f.email.touched && f.email.invalid) {
-              <p class="field-error">Please enter a valid email address.</p>
-            }
+          <div class="field-row">
+            <div class="field">
+              <label for="email">Your Email</label>
+              <input id="email" type="email" formControlName="email" autocomplete="email"
+                     [attr.aria-invalid]="f.email.touched && f.email.invalid" />
+              @if (f.email.touched && f.email.invalid) {
+                <p class="field-error">Please enter a valid email address.</p>
+              }
+            </div>
+
+            <div class="field">
+              <label for="phone">Mobile Number <span class="optional">(optional)</span></label>
+              <input id="phone" type="tel" inputmode="tel" formControlName="phone" autocomplete="tel"
+                     placeholder="+91 98765 43210"
+                     [attr.aria-invalid]="f.phone.touched && f.phone.invalid" />
+              @if (f.phone.touched && f.phone.invalid) {
+                <p class="field-error">Enter a valid number, for example +91 98765 43210.</p>
+              }
+            </div>
           </div>
 
           <div class="field">
             <label for="message">Message</label>
-            <textarea id="message" rows="5" formControlName="message"></textarea>
+            <textarea id="message" rows="5" formControlName="message"
+                      [attr.aria-invalid]="f.message.touched && f.message.invalid"></textarea>
             @if (f.message.touched && f.message.invalid) {
               <p class="field-error">Please write at least 10 characters.</p>
             }
           </div>
+
+          <!-- Spam trap: real visitors never see or fill this -->
+          <input class="hp" type="text" formControlName="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
           <button class="btn btn-primary" type="submit" [disabled]="status() === 'sending'">
             {{ status() === 'sending' ? 'Sending...' : 'Send Message' }}
@@ -59,10 +79,12 @@ type Status = 'idle' | 'sending' | 'sent' | 'error';
 
           <div role="status" aria-live="polite">
             @if (status() === 'sent') {
-              <p class="form-note">Message sent successfully. I'll get back to you soon.</p>
+              <p class="form-note">Message sent. Thank you, I'll get back to you soon.</p>
             }
             @if (status() === 'error') {
-              <p class="form-note error">Message failed to send. Please email {{ profile.email }} directly.</p>
+              <p class="form-note error">
+                The message didn't send. Please try again or email {{ profile.email }} directly.
+              </p>
             }
           </div>
         </form>
@@ -78,7 +100,10 @@ export class ContactComponent {
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
+    // Optional, but if filled it must look like a phone number (7 to 15 digits)
+    phone: ['', [Validators.pattern(/^\+?[0-9][0-9\s-]{5,17}[0-9]$/)]],
     message: ['', [Validators.required, Validators.minLength(10)]],
+    website: [''], // honeypot
   });
 
   get f() {
@@ -90,13 +115,15 @@ export class ContactComponent {
       this.form.markAllAsTouched();
       return;
     }
-    const value = this.form.getRawValue();
+    const v = this.form.getRawValue();
 
-    if (FORM_ENDPOINT.includes('YOUR_FORM_ID')) {
-      const subject = encodeURIComponent(`Portfolio inquiry from ${value.name}`);
-      const body = encodeURIComponent(`${value.message}\n\nFrom: ${value.name} (${value.email})`);
+    // Setup not finished yet: fall back to the visitor's email app
+    if (FORMSPREE_ID === 'YOUR_FORM_ID' as string) {
+      const subject = encodeURIComponent(`Portfolio inquiry from ${v.name}`);
+      const body = encodeURIComponent(
+        `${v.message}\n\nName: ${v.name}\nEmail: ${v.email}${v.phone ? `\nMobile: ${v.phone}` : ''}`,
+      );
       window.location.href = `mailto:${this.profile.email}?subject=${subject}&body=${body}`;
-      this.status.set('sent');
       return;
     }
 
@@ -105,7 +132,14 @@ export class ContactComponent {
       const res = await fetch(FORM_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(value),
+        body: JSON.stringify({
+          name: v.name,
+          email: v.email,
+          phone: v.phone || 'Not provided',
+          message: v.message,
+          _subject: `Portfolio inquiry from ${v.name}`,
+          _gotcha: v.website,
+        }),
       });
       if (!res.ok) throw new Error('Request failed');
       this.status.set('sent');
