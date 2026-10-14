@@ -26,6 +26,7 @@ export interface Site {
 
 export interface SkillGroup {
   title: string;
+  icon: string;
   items: string[];
   featured?: boolean;
 }
@@ -47,11 +48,14 @@ export const PROFILE = {
   linkedin: 'https://linkedin.com/in/gnana-chandra',
   github: 'https://github.com/chandu1025',
   resume: 'Gnana_Chandra_Angular_Dev.pdf',
+  instagram: 'https://instagram.com/your-handle',
+  whatsappNumber: '919876543210', // digits only: country code + mobile number
 };
 
 export const SKILLS: SkillGroup[] = [
   {
     title: 'Angular',
+    icon: 'layers',
     featured: true,
     items: [
       'Angular 19',
@@ -65,26 +69,32 @@ export const SKILLS: SkillGroup[] = [
   },
   {
     title: 'Frontend',
+    icon: 'palette',
     items: ['TypeScript', 'JavaScript (ES6+)', 'HTML5', 'CSS3', 'Bootstrap', 'Tailwind CSS', 'Responsive web design'],
   },
   {
     title: 'APIs and data',
+    icon: 'database',
     items: ['REST APIs', 'HTTP Client', 'JSON handling', 'SQL', 'MySQL', 'SQLite'],
   },
   {
     title: 'Other languages',
+    icon: 'code-slash',
     items: ['Python', 'PHP', 'Java (basic)', 'C# (learning)'],
   },
   {
     title: 'Tools and workflow',
+    icon: 'tools',
     items: ['Git', 'GitHub', 'Azure DevOps', 'Visual Studio Code', 'Postman', 'Chrome DevTools', 'XAMPP'],
   },
   {
     title: 'Practices',
+    icon: 'diagram-3',
     items: ['Object-oriented programming', 'SDLC', 'Agile development', 'Debugging', 'Problem solving'],
   },
   {
     title: 'CMS and design',
+    icon: 'brush',
     items: ['WordPress', 'Canva'],
   },
 ];

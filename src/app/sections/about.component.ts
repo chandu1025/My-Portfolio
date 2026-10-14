@@ -25,19 +25,19 @@ import { RevealDirective } from '../shared/reveal.directive';
           </p>
           <dl class="facts">
             <div>
-              <dt>Location</dt>
+<dt><i class="bi bi-geo-alt" aria-hidden="true"></i>Location</dt>
               <dd>{{ profile.location }}</dd>
             </div>
             <div>
-              <dt>Current Role</dt>
+<dt><i class="bi bi-briefcase" aria-hidden="true"></i>Current Role</dt>
               <dd>Angular Frontend Developer at Intelizest</dd>
             </div>
             <div>
-              <dt>Engineering Degree</dt>
+<dt><i class="bi bi-mortarboard" aria-hidden="true"></i>Engineering Degree</dt>
               <dd>B.Tech in Electronics & Communication</dd>
             </div>
             <div>
-              <dt>Freelance</dt>
+<dt><i class="bi bi-hammer" aria-hidden="true"></i>Freelance</dt>
               <dd>Web & WordPress Solutions</dd>
             </div>
           </dl>

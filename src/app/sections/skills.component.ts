@@ -15,8 +15,10 @@ import { RevealDirective } from '../shared/reveal.directive';
         <div class="skill-grid">
           @for (group of skills; track group.title) {
             <article class="skill-card glass-panel" [class.featured]="group.featured" appReveal>
-              <h3>{{ group.title }}</h3>
-              <ul class="chips">
+<div class="skill-head">
+  <span class="ico-badge"><i [class]="'bi bi-' + group.icon" aria-hidden="true"></i></span>
+  <h3>{{ group.title }}</h3>
+</div>              <ul class="chips">
                 @for (item of group.items; track item) {
                   <li>{{ item }}</li>
                 }

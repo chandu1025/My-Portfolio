@@ -21,13 +21,25 @@ type Status = 'idle' | 'sending' | 'sent' | 'error';
           <p>
             Whether you are hiring for an Angular developer role or looking to build a custom web interface, feel free to reach out.
           </p>
-          <ul class="contact-links">
-            <li><a [href]="'mailto:' + profile.email">✉ {{ profile.email }}</a></li>
-            <li><a [href]="'tel:' + profile.phone">☏ {{ profile.phone }}</a></li>
-            <li><a [href]="profile.linkedin" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
-            <li><a [href]="profile.github" target="_blank" rel="noopener noreferrer">GitHub ↗</a></li>
-          </ul>
-          <a class="btn btn-primary" [href]="profile.resume" download>Download Resume</a>
+        <ul class="contact-links">
+  <li><a [href]="'mailto:' + profile.email"><i class="bi bi-envelope" aria-hidden="true"></i>{{ profile.email }}</a></li>
+  <li><a [href]="'tel:' + profile.phone"><i class="bi bi-telephone" aria-hidden="true"></i>{{ profile.phone }}</a></li>
+  @if (profile.whatsappNumber) {
+    <li><a [href]="'https://wa.me/' + profile.whatsappNumber" target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp" aria-hidden="true"></i>WhatsApp</a></li>
+  }
+  @if (profile.linkedin) {
+    <li><a [href]="profile.linkedin" target="_blank" rel="noopener noreferrer"><i class="bi bi-linkedin" aria-hidden="true"></i>LinkedIn</a></li>
+  }
+  @if (profile.github) {
+    <li><a [href]="profile.github" target="_blank" rel="noopener noreferrer"><i class="bi bi-github" aria-hidden="true"></i>GitHub</a></li>
+  }
+  @if (profile.instagram) {
+    <li><a [href]="profile.instagram" target="_blank" rel="noopener noreferrer"><i class="bi bi-instagram" aria-hidden="true"></i>Instagram</a></li>
+  }
+</ul>
+<a class="btn btn-primary" [href]="profile.resume" download>
+  <i class="bi bi-download" aria-hidden="true"></i> Download Resume
+</a>
         </div>
 
         <form class="contact-form glass-panel" [formGroup]="form" (ngSubmit)="submit()" novalidate appReveal>
@@ -74,8 +86,9 @@ type Status = 'idle' | 'sending' | 'sent' | 'error';
           <input class="hp" type="text" formControlName="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
           <button class="btn btn-primary" type="submit" [disabled]="status() === 'sending'">
-            {{ status() === 'sending' ? 'Sending...' : 'Send Message' }}
-          </button>
+  <i class="bi bi-send" aria-hidden="true"></i>
+  {{ status() === 'sending' ? 'Sending...' : 'Send Message' }}
+</button>
 
           <div role="status" aria-live="polite">
             @if (status() === 'sent') {
