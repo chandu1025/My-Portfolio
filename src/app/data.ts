@@ -39,22 +39,26 @@ export interface Education {
 }
 
 
+
 export const PROFILE = {
   name: 'Gnana Chandra',
+  shortName: 'Chandu',
+  fullName: 'Gnana Chandra',
   title: 'Angular Frontend Developer',
+
   email: 'chandujetty012@gmail.com',
   phone: '+919347731913',
-
-  // WhatsApp number: country code + mobile number, digits only
   whatsappNumber: '919347731913',
+
+  location: 'Tirupati, India',
 
   linkedin: 'https://www.linkedin.com/in/gnana-chandra/',
   github: 'https://github.com/chandu1025',
   instagram: 'https://www.instagram.com/chandu_jetty/',
 
-  // Replace with your actual resume path
   resume: '/assets/resume.pdf',
 };
+
 
 
 export const SKILLS: SkillGroup[] = [
