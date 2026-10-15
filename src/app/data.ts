@@ -38,19 +38,24 @@ export interface Education {
   score: string;
 }
 
+
 export const PROFILE = {
-  fullName: 'Bhuvanagiri Gnana Chandra',
-  shortName: 'Gnana Chandra',
-  role: 'Angular Frontend Developer',
-  location: 'Tirupati, Andhra Pradesh, India',
+  name: 'Gnana Chandra',
+  title: 'Angular Frontend Developer',
   email: 'chandujetty012@gmail.com',
-  phone: '+91-9347731913',
-  linkedin: 'https://linkedin.com/in/gnana-chandra',
+  phone: '+919347731913',
+
+  // WhatsApp number: country code + mobile number, digits only
+  whatsappNumber: '919347731913',
+
+  linkedin: 'https://www.linkedin.com/in/gnana-chandra/',
   github: 'https://github.com/chandu1025',
-  resume: 'Gnana_Chandra_Angular_Dev.pdf',
-  instagram: 'https://instagram.com/your-handle',
-  whatsappNumber: '919876543210', // digits only: country code + mobile number
+  instagram: 'https://www.instagram.com/chandu_jetty/',
+
+  // Replace with your actual resume path
+  resume: '/assets/resume.pdf',
 };
+
 
 export const SKILLS: SkillGroup[] = [
   {
