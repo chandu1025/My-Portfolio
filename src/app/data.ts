@@ -42,7 +42,7 @@ export interface Education {
 
 export const PROFILE = {
   name: 'Gnana Chandra',
-  shortName: 'Chandu',
+  shortName: 'Gnana Chandra',
   fullName: 'Gnana Chandra',
   title: 'Angular Frontend Developer',
 
