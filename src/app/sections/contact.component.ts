@@ -280,8 +280,7 @@ export class ContactComponent {
       );
 
       const body = encodeURIComponent(
-        `${v.message}\n\nName: ${v.name}\nEmail: ${v.email}${
-          v.phone ? `\nMobile: ${v.phone}` : ''
+        `${v.message}\n\nName: ${v.name}\nEmail: ${v.email}${v.phone ? `\nMobile: ${v.phone}` : ''
         }`,
       );
 
